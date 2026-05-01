@@ -1,23 +1,27 @@
 env:
   variables:
-    REPOSITORY_URI: 469740788063.dkr.ecr.eu-west-2.amazonaws.com/harness-ecs-lab
+    AWS_DEFAULT_REGION: "eu-west-2"
+    AWS_ACCOUNT_ID: "469740788063"
+    IMAGE_REPO_NAME: "harness-ecs-lab"
+    IMAGE_TAG: "v1"
 
 phases:
   pre_build:
     commands:
-      - echo Logging in to ECR...
-      - aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin $REPOSITORY_URI
+      - "echo Logging in to Amazon ECR..."
+      - "aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com"
 
   build:
     commands:
-      - echo Build started...
-      - docker build -t harness-ecs-lab .
-      - docker tag harness-ecs-lab:latest $REPOSITORY_URI:v1
+      - "echo Build started..."
+      - "docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG ."
+      - "docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG"
 
   post_build:
     commands:
-      - echo Pushing image...
-      - docker push $REPOSITORY_URI:v1
+      - "echo Pushing Docker image to ECR..."
+      - "docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG"
 
 artifacts:
-  files: '**/*'
+  files:
+    - "**/*"
