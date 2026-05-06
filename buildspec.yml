@@ -5,7 +5,7 @@ env:
     AWS_DEFAULT_REGION: eu-west-2
     AWS_ACCOUNT_ID: "469740788063"
     IMAGE_REPO_NAME: harness-ecs-lab
-    IMAGE_TAG: v2
+    IMAGE_TAG: v3
 
 phases:
   pre_build:
